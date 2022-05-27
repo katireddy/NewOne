@@ -19,7 +19,7 @@ pipeline {
         stage("Clone code from GitHub") {
             steps {
                 script {
-                    git 'https://github.com/PSSahana/NCS_CICD.git';
+                    git 'https://github.com/PSSahana/NewOne.git';
                 }
             }
         }
