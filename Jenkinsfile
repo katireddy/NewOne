@@ -5,7 +5,7 @@ pipeline {
 	tools {
         maven "maven3"
     }
-*/	
+	
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
@@ -14,7 +14,7 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus_id"
     
     }
-	
+*/	
     stages{
         stage("Clone code from GitHub") {
             steps {
