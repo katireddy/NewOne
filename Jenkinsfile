@@ -12,7 +12,7 @@ pipeline {
         NEXUS_URL = "10.0.13.242:8081"
         NEXUS_REPOSITORY = "pipelinedemo"
         NEXUS_CREDENTIAL_ID = "nexus_id"
-        ARTVERSION = "${env.BUILD_ID}"
+    
     }
 	
     stages{
@@ -69,22 +69,23 @@ pipeline {
                 }
                 }  
         }
+        /*
         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
-                    /*pom = readMavenPom file: "pom.xml";
+                    def pom = readMavenPom  file:"pom.xml";
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path;
                     artifactExists = fileExists artifactPath;
                     if(artifactExists) {
                         echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version} ARTVERSION";
-                    */  nexusArtifactUploader(
+                     nexusArtifactUploader(
                             nexusVersion: NEXUS_VERSION,
                             protocol: NEXUS_PROTOCOL,
                             nexusUrl: NEXUS_URL,
                             groupId: pom.groupId,
-                            version: ARTVERSION,
+                            version: pom.version,
                             repository: NEXUS_REPOSITORY,
                             credentialsId: NEXUS_CREDENTIAL_ID,
                             artifacts: [
@@ -99,13 +100,37 @@ pipeline {
                             ]
                         );
                     } 
-		    /*else {
+		    else {
                         error "*** File: ${artifactPath}, could not be found";
                     }
-               }*/ 
+               
+            }
+        
+
+
+
+        }*/
+        stage("Publish to Nexus Repository Manager") {
+            steps{
+                script{
+                    def mavenPom = readMavenPom  file: 'pom.xml'
+                    nexusArtifactUploader artifacts: [
+                        [artifactId: 'webapp', 
+                        classifier: '', 
+                        file: "target/webapp-${mavenPom.version}.war", 
+                        type: 'war']], 
+                        credentialsId: 'ad', 
+                        groupId: 'com.example.maven-project', 
+                        nexusUrl: '10.0.13.242:8081', 
+                        nexusVersion: 'nexus3', 
+                        protocol: 'http', 
+                        repository: 'pipelinedemo', 
+                        version: "${mavenPom.version}"
+
+                }
             }
         }
-        
+
 
         
 
