@@ -62,9 +62,9 @@ pipeline {
                 }
             }
             steps{
-                cript{
+                script{
                     withSonarQubeEnv('sonar-server') { 
-                    sh "mvn sonar:sonar"
+                        sh "mvn sonar:sonar"
                     }
                     timeout(time: 1, unit: 'HOURS') {
                     def qg = waitForQualityGate()
