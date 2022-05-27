@@ -52,6 +52,30 @@ pipeline {
             
         
    	    }
+        
+        stage('Quality Gate Statuc Check'){
+
+            agent {
+                docker {
+                image 'maven'
+                args '-v $HOME/.m2:/root/.m2'
+                }
+            }
+            steps{
+                cript{
+                    withSonarQubeEnv('sonar-server') { 
+                    sh "mvn sonar:sonar"
+                    }
+                    timeout(time: 1, unit: 'HOURS') {
+                    def qg = waitForQualityGate()
+                    if (qg.status != 'OK') {
+                       error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                    }
+                    }
+		            sh "mvn clean install"
+                }
+                }  
+        }
         stage("Publish to Nexus Repository Manager") {
             steps {
                 script {
@@ -89,31 +113,6 @@ pipeline {
             }
         }
         
-        stage('CODE ANALYSIS with SONARQUBE') {
-          
-		  environment {
-             scannerHome = tool name: 'sonarscanner4', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-          }
-
-          steps {
-            withSonarQubeEnv('sonar-server') {
-               sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
-                   -Dsonar.projectName=vprofile-repo \
-                   -Dsonar.projectVersion=1.0 \
-                   -Dsonar.sources=src/ \
-                   -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
-                   -Dsonar.junit.reportsPath=target/surefire-reports/ \
-                   -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                   -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
-            }
-
-            timeout(time: 10, unit: 'MINUTES') {
-               waitForQualityGate abortPipeline: true
-            }
-          }
-        }
-        
-	    
 
         
 
