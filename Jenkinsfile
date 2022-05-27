@@ -19,7 +19,7 @@ pipeline {
         stage("Clone code from GitHub") {
             steps {
                 script {
-                    git 'https://github.com/PSSahana/NewOne.git';
+                    git branch: 'main', url: 'https://github.com/PSSahana/NewOne.git';
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
             steps{
                 script{
                     sshagent(['tomcat-deploy']) {
-                    sh 'scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/NCS-pipeline/target/*.war ubuntu@10.0.10.19:/opt/tomcat/webapps'
+                    sh 'scp -o StrictHostKeyChecking=no /var/lib/jenkins/workspace/NCS-pipeline/target/*.war ubuntu@10.0.10.19:/opt/tomcat/webapps/'
                     }
                 }
             }
