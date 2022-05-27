@@ -112,13 +112,14 @@ pipeline {
         }*/
         stage("Publish to Nexus Repository Manager") {
             steps{
-                script{
-                    def mavenPom = readMavenPom  file: 'pom.xml'
+                def mavenPom = readMavenPom  file: 'pom.xml'
+                script{ 
                     nexusArtifactUploader artifacts: [
                         [artifactId: 'webapp', 
                         classifier: '', 
                         file: "target/webapp-${mavenPom.version}.war", 
-                        type: 'war']], 
+                        type: 'war']
+                        ], 
                         credentialsId: 'ad', 
                         groupId: 'com.example.maven-project', 
                         nexusUrl: '10.0.13.242:8081', 
