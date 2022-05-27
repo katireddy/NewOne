@@ -19,7 +19,7 @@ pipeline {
         stage("Clone code from GitHub") {
             steps {
                 script {
-                    git branch: 'main', url: 'https://github.com/PSSahana/NewOne.git';
+                    git branch: 'main', url: 'https://github.com/katireddy/NewOne.git';
                 }
             }
         }
@@ -116,7 +116,7 @@ pipeline {
                     nexusArtifactUploader artifacts: [
                         [artifactId: 'webapp', 
                         classifier: '', 
-                        file: "target/Webapp-1.0-SNAPSHOT.war", 
+                        file: 'target/Webapp-1.0.0.war', 
                         type: 'war']
                         ], 
                         credentialsId: 'ad', 
@@ -125,7 +125,7 @@ pipeline {
                         nexusVersion: 'nexus3', 
                         protocol: 'http', 
                         repository: 'pipelinedemo', 
-                        version: "1.0-SNAPSHOT"
+                        version: '1.0.0'
 
                
             }
